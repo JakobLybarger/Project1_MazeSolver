@@ -3,15 +3,22 @@ package MazeProject;
 import java.io.*;
 import java.util.ArrayList;
 
+enum Square {
+    START,
+    EXIT,
+    WALL,
+    OPEN_SPACE
+}
+
 public class MazeReader {
     private char[][] maze;
+    private Square[][] sMaze;
 
-    public MazeReader(String fileName) throws IOException {
+    public MazeReader(String fileName) {
         ArrayList<ArrayList<Character>> tempMaze = new ArrayList<>();
         fileName = System.getProperty("user.dir") + "/" + fileName;
 
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
-        try {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));) {
             String line = bufferedReader.readLine();
             while(line != null) {
                 ArrayList<Character> chars = new ArrayList<>();
@@ -24,15 +31,31 @@ public class MazeReader {
 
         } catch(Exception e) {
             System.err.println("Error encountered");
-        } finally {
-            bufferedReader.close();
         }
 
         this.maze = new char[tempMaze.size()][tempMaze.get(0).size()];
+        this.sMaze = new Square[tempMaze.size()][tempMaze.get(0).size()];
         for (int i = 0; i < tempMaze.size(); i++) {
             for (int j = 0; j < tempMaze.get(i).size(); j++) {
-                this.maze[i][j] = tempMaze.get(i).get(j);
+                char c = tempMaze.get(i).get(j);
+                this.maze[i][j] = c;
+                this.sMaze[i][j] = fromChar(c);
             }
+        }
+    }
+
+    public static Square fromChar(char ch) throws IllegalArgumentException {
+        switch (ch) {
+            case '#':
+                return Square.WALL;
+            case '.':
+                return Square.OPEN_SPACE;
+            case 'o':
+                return Square.START;
+            case '*':
+                return Square.EXIT;
+            default:
+                throw new IllegalArgumentException();
         }
     }
 
