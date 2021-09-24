@@ -3,13 +3,6 @@ package MazeProject;
 import java.io.*;
 import java.util.ArrayList;
 
-enum Square {
-    START,
-    EXIT,
-    WALL,
-    OPEN_SPACE
-}
-
 public class MazeReader {
     private char[][] maze;
     private Square[][] sMaze;
