@@ -3,15 +3,20 @@ package MazeProject;
 import java.io.*;
 import java.util.ArrayList;
 
-// Change maze tostring later
 public class MazeReader {
     private char[][] maze;
     private Square[][] sMaze;
 
+
+    public MazeReader(String fileName) {
+        readFile(fileName);
+    }
+
     public char[][] getMaze() {
         return this.maze;
     }
-    public MazeReader(String fileName) {
+
+    private void readFile(String fileName) {
         ArrayList<ArrayList<Character>> tempMaze = new ArrayList<>();
         fileName = System.getProperty("user.dir") + "/" + fileName;
 
