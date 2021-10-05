@@ -16,7 +16,7 @@ public class MazeApp {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
-
+        
         // text field, load, start
         JPanel panel = new JPanel();
         JLabel label = new JLabel("File Name: ");
