@@ -70,13 +70,10 @@ public class MazeSolver {
         for (int i = 0; i < endGoals.size(); i++) {
             this.goals[i] = endGoals.get(i);
         }
-
-//        System.out.println("Start x: " + this.startX);
-//        System.out.println("Start y: " + this.startY);
     }
 
     // DFS
-    int DFS() {
+    boolean DFS(List<Integer> path) {
         boolean[][] visited = new boolean[this.maze.length][this.maze[0].length];
         int[][] directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
         Stack<int[]> frontier = new Stack<>();
@@ -87,7 +84,12 @@ public class MazeSolver {
             visited[coord[0]][coord[1]] = true;
 
             if (this.maze[coord[0]][coord[1]] == '*') {
-                return coord[2];
+                path.add(coord[1]);
+                path.add(coord[0]);
+                return true;
+            } else if (!(coord[0] == startY && coord[1] == startX)) {
+                path.add(coord[1]);
+                path.add(coord[0]);
             }
 
             // Refactor nr and nc to something else
@@ -100,11 +102,11 @@ public class MazeSolver {
                 frontier.push(new int[]{nr, nc, coord[2]+1});
             }
         }
-        return -1;
+        return false;
     }
 
     // BFS
-    int BFS() {
+    boolean BFS(List<Integer> path) {
         boolean[][] visited = new boolean[this.maze.length][this.maze[0].length];
         int[][] directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
         Queue<int[]> frontier = new LinkedList<>();
@@ -115,7 +117,12 @@ public class MazeSolver {
             visited[coord[0]][coord[1]] = true;
 
             if (this.maze[coord[0]][coord[1]] == '*') {
-                return coord[2];
+                path.add(coord[1]);
+                path.add(coord[0]);
+                return true;
+            } else if (!(coord[0] == startY && coord[1] == startX)) {
+                path.add(coord[1]);
+                path.add(coord[0]);
             }
 
             // Refactor nr and nc to something else
@@ -128,11 +135,11 @@ public class MazeSolver {
                 frontier.add(new int[]{nr, nc, coord[2]+1});
             }
         }
-        return -1;
+        return false;
     }
 
     // Best FS
-    int GBFS() {
+    boolean GBFS(List<Integer> path) {
         boolean[][] visited = new boolean[this.maze.length][this.maze[0].length];
         int[][] directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
         PriorityQueue<GBFSNode> frontier = new PriorityQueue<>();
@@ -142,7 +149,12 @@ public class MazeSolver {
         while(!frontier.isEmpty()) {
             GBFSNode curNode = frontier.poll();
             if (this.maze[curNode.y][curNode.x] == '*') {
-                return curNode.distanceFromStart;
+                path.add(curNode.x);
+                path.add(curNode.y);
+                return true;
+            } else if (!(curNode.y == startY && curNode.x == startX)) {
+                path.add(curNode.x);
+                path.add(curNode.y);
             }
 
             visited[curNode.y][curNode.x] = true;
@@ -161,7 +173,7 @@ public class MazeSolver {
             }
         }
 
-        return -1;
+        return false;
     }
 
     private int calcDistanceToClosestGoal(int x, int y) {

@@ -8,6 +8,6 @@ public class Test {
         MazeReader mr = new MazeReader("maze1.txt");
         System.out.println(mr);
         MazeSolver ms = new MazeSolver(mr.getMaze());
-        System.out.println("Length of path: " + ms.DFS());
+//        System.out.println("Length of path: " + ms.DFS());
     }
 }

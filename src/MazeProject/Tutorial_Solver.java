@@ -25,7 +25,6 @@ public class Tutorial_Solver {
             int[] coord = frontier.pop();
             visited[coord[0]][coord[1]] = true;
 
-
             if (maze[coord[0]][coord[1]] == '*') {
                 return true;
             } else if (!(coord[0] == y && coord[1] == x)) {

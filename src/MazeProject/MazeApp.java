@@ -16,7 +16,7 @@ public class MazeApp {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
-        
+
         // text field, load, start
         JPanel panel = new JPanel();
         JLabel label = new JLabel("File Name: ");
@@ -50,7 +50,7 @@ public class MazeApp {
                 try {
                     mazeSolver = new MazeSolver(mazeReader.getMaze());
 //                    mazeSolver.GBFS();
-                    System.out.println("Length of path: " + mazeSolver.GBFS());
+//                    System.out.println("Length of path: " + mazeSolver.GBFS());
                 } catch (Error e) {
                     System.err.println("No file loaded");
                     System.err.println(e.getStackTrace());
