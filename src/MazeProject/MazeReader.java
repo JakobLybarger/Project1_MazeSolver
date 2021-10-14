@@ -1,19 +1,34 @@
 package MazeProject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 public class MazeReader {
-    private char[][] maze;
-    private Square[][] sMaze;
-
+    private char[][] charMaze;
+    private Square[][] maze;
 
     public MazeReader(String fileName) {
         readFile(fileName);
     }
 
-    public char[][] getMaze() {
+    public Square[][] getMaze() {
         return this.maze;
+    }
+
+    public static Square fromChar(char ch) throws IllegalArgumentException {
+        switch (ch) {
+            case '#':
+                return Square.WALL;
+            case '.':
+                return Square.OPEN_SPACE;
+            case 'o':
+                return Square.START;
+            case '*':
+                return Square.EXIT;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     private void readFile(String fileName) {
@@ -35,38 +50,23 @@ public class MazeReader {
             System.err.println("Error encountered");
         }
 
-        this.maze = new char[tempMaze.size()][tempMaze.get(0).size()];
-        this.sMaze = new Square[tempMaze.size()][tempMaze.get(0).size()];
+        this.charMaze = new char[tempMaze.size()][tempMaze.get(0).size()];
+        this.maze = new Square[tempMaze.size()][tempMaze.get(0).size()];
         for (int i = 0; i < tempMaze.size(); i++) {
             for (int j = 0; j < tempMaze.get(i).size(); j++) {
                 char c = tempMaze.get(i).get(j);
-                this.maze[i][j] = c;
-                this.sMaze[i][j] = fromChar(c);
+                this.charMaze[i][j] = c;
+                this.maze[i][j] = fromChar(c);
             }
-        }
-    }
-
-    public static Square fromChar(char ch) throws IllegalArgumentException {
-        switch (ch) {
-            case '#':
-                return Square.WALL;
-            case '.':
-                return Square.OPEN_SPACE;
-            case 'o':
-                return Square.START;
-            case '*':
-                return Square.EXIT;
-            default:
-                throw new IllegalArgumentException();
         }
     }
 
     @Override
     public String toString() {
         StringBuilder stringMaze = new StringBuilder();
-        for (int i = 0; i < this.maze.length; i++) {
-            for (int j = 0; j < this.maze[i].length; j++) {
-                stringMaze.append(this.maze[i][j]);
+        for (int i = 0; i < this.charMaze.length; i++) {
+            for (int j = 0; j < this.charMaze[i].length; j++) {
+                stringMaze.append(this.charMaze[i][j]);
             }
             stringMaze.append("\n");
         }
