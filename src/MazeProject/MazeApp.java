@@ -97,7 +97,7 @@ public class MazeApp extends JFrame {
                     path = gbfsPath;
                     selectedAlgorithm = "   Greedy Best-First Search";
                     if (dfsPath.size() < path.size()) {
-                        path = dfsPath;c
+                        path = dfsPath;
                         selectedAlgorithm = "   Depth-First Search";
                     }
                     if (bfsPath.size() < path.size()) {
