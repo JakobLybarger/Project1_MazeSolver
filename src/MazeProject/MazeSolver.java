@@ -4,50 +4,11 @@ import java.util.*;
 
 public class MazeSolver {
 
-    private class GBFSNode implements Comparable<GBFSNode> {
-        int x, y, distanceFromStart, estimatedDistanceFromGoal;
-
-
-        public GBFSNode(int x, int y, int distanceFromStart, int estimatedDistanceFromGoal) {
-            this.x = x;
-            this.y = y;
-            this.distanceFromStart = distanceFromStart;
-            this.estimatedDistanceFromGoal = estimatedDistanceFromGoal;
-        }
-
-        @Override
-        public int compareTo(GBFSNode otherNode) {
-            return estimatedDistanceFromGoal - otherNode.estimatedDistanceFromGoal;
-        }
-
-        @Override
-        public boolean equals(Object otherNode) {
-            if (otherNode instanceof GBFSNode) {
-                if (x == ((GBFSNode) otherNode).x && y == ((GBFSNode) otherNode).y) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    private class Node {
-        int x, y;
-
-        public Node(int x, int y){
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    // 1. Determine starting point within maze
-    // 2. From starting point determine best path to end point(s)
-
-    char[][] maze;
+    Square[][] maze;
     Node[] goals;
     int startX, startY, rows, cols;
 
-    public MazeSolver(char[][] maze) {
+    public MazeSolver(Square[][] maze) {
         this.maze = maze.clone();
         this.rows = maze.length;
         this.cols = maze[0].length;
@@ -55,12 +16,12 @@ public class MazeSolver {
         List<Node> endGoals = new ArrayList<>();
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
-                if (maze[i][j] == 'o') {
+                if (maze[i][j] == Square.START) {
                     this.startY = i;
                     this.startX = j;
                 }
 
-                if (maze[i][j] == '*') {
+                if (maze[i][j] == Square.EXIT) {
                     endGoals.add(new Node(j, i));
                 }
             }
@@ -72,7 +33,6 @@ public class MazeSolver {
         }
     }
 
-    // DFS
     boolean DFS(List<Integer> path) {
         boolean[][] visited = new boolean[this.maze.length][this.maze[0].length];
         int[][] directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
@@ -83,7 +43,7 @@ public class MazeSolver {
             int[] coord = frontier.pop();
             visited[coord[0]][coord[1]] = true;
 
-            if (this.maze[coord[0]][coord[1]] == '*') {
+            if (this.maze[coord[0]][coord[1]] == Square.EXIT) {
                 path.add(coord[1]);
                 path.add(coord[0]);
                 return true;
@@ -96,7 +56,7 @@ public class MazeSolver {
             for (int i = 0; i < directions.length; i++) {
                 int nr = coord[0] + directions[i][0], nc = coord[1] + directions[i][1];
                 if (nr < 0 || nr >= this.rows || nc < 0 || nc >= this.cols ||
-                        this.maze[nr][nc] == '#' || visited[nr][nc]) {
+                        this.maze[nr][nc] == Square.WALL || visited[nr][nc]) {
                     continue;
                 }
                 frontier.push(new int[]{nr, nc, coord[2]+1});
@@ -116,7 +76,7 @@ public class MazeSolver {
             int[] coord = frontier.poll();
             visited[coord[0]][coord[1]] = true;
 
-            if (this.maze[coord[0]][coord[1]] == '*') {
+            if (this.maze[coord[0]][coord[1]] == Square.EXIT) {
                 path.add(coord[1]);
                 path.add(coord[0]);
                 return true;
@@ -129,7 +89,7 @@ public class MazeSolver {
             for (int i = 0; i < directions.length; i++) {
                 int nr = coord[0] + directions[i][0], nc = coord[1] + directions[i][1];
                 if (nr < 0 || nr >= this.rows || nc < 0 || nc >= this.cols ||
-                        this.maze[nr][nc] == '#' || visited[nr][nc]) {
+                        this.maze[nr][nc] == Square.WALL || visited[nr][nc]) {
                     continue;
                 }
                 frontier.add(new int[]{nr, nc, coord[2]+1});
@@ -148,7 +108,7 @@ public class MazeSolver {
 
         while(!frontier.isEmpty()) {
             GBFSNode curNode = frontier.poll();
-            if (this.maze[curNode.y][curNode.x] == '*') {
+            if (this.maze[curNode.y][curNode.x] == Square.EXIT) {
                 path.add(curNode.x);
                 path.add(curNode.y);
                 return true;
@@ -162,7 +122,7 @@ public class MazeSolver {
             for (int i = 0; i < directions.length; i++) {
                 int nextY = curNode.y + directions[i][0], nextX = curNode.x + directions[i][1];
                 if (nextY < 0 || nextY >= this.rows || nextX < 0 || nextX >= this.cols ||
-                        this.maze[nextY][nextX] == '#' || visited[nextY][nextX]) {
+                        this.maze[nextY][nextX] == Square.WALL || visited[nextY][nextX]) {
                     continue;
                 }
 
@@ -190,6 +150,40 @@ public class MazeSolver {
     private int calcManhattanDistance(int curX, int curY, int endX, int endY) {
         return Math.abs(curX - endX) + Math.abs(curY - endY);
     }
+
+    private class Node {
+        int x, y;
+
+        public Node(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    private class GBFSNode implements Comparable<GBFSNode> {
+        int x, y, distanceFromStart, estimatedDistanceFromGoal;
+
+
+        public GBFSNode(int x, int y, int distanceFromStart, int estimatedDistanceFromGoal) {
+            this.x = x;
+            this.y = y;
+            this.distanceFromStart = distanceFromStart;
+            this.estimatedDistanceFromGoal = estimatedDistanceFromGoal;
+        }
+
+        @Override
+        public int compareTo(GBFSNode otherNode) {
+            return estimatedDistanceFromGoal - otherNode.estimatedDistanceFromGoal;
+        }
+
+        @Override
+        public boolean equals(Object otherNode) {
+            if (otherNode instanceof GBFSNode) {
+                if (x == ((GBFSNode) otherNode).x && y == ((GBFSNode) otherNode).y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }
-
-

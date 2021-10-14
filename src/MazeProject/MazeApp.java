@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class MazeApp extends JFrame {
 
-    private char[][] maze;
+    private Square[][] maze;
     private boolean loaded = false;
     private boolean started = false;
     private boolean running = false;
@@ -170,10 +170,10 @@ public class MazeApp extends JFrame {
                 for (int col = 0; col < maze[0].length; col++) {
                     Color color;
                     switch(maze[row][col]) {
-                        case '#': color = Color.BLACK; break;
-                        case '.': color = Color.WHITE; break;
-                        case '*': color = Color.RED; break;
-                        case 'o': color = Color.GREEN; break;
+                        case WALL: color = Color.BLACK; break;
+                        case OPEN_SPACE: color = Color.WHITE; break;
+                        case EXIT: color = Color.RED; break;
+                        case START: color = Color.GREEN; break;
                         default:
                             throw new IllegalStateException("Unexpected value: " + maze[row][col]);
                     }
