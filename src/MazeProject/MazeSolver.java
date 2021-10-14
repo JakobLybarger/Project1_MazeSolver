@@ -36,30 +36,30 @@ public class MazeSolver {
     boolean DFS(List<Integer> path) {
         boolean[][] visited = new boolean[this.maze.length][this.maze[0].length];
         int[][] directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
-        Stack<int[]> frontier = new Stack<>();
-        frontier.push(new int[]{startY, startX, 0});
+        Stack<Node> frontier = new Stack<>();
+        frontier.push(new Node(startX, startY));
 
         while (!frontier.isEmpty()) {
-            int[] coord = frontier.pop();
-            visited[coord[0]][coord[1]] = true;
+            Node curNode = frontier.pop();
+            visited[curNode.y][curNode.x] = true;
 
-            if (this.maze[coord[0]][coord[1]] == Square.EXIT) {
-                path.add(coord[1]);
-                path.add(coord[0]);
+            if (this.maze[curNode.y][curNode.x] == Square.EXIT) {
+                path.add(curNode.x);
+                path.add(curNode.y);
                 return true;
-            } else if (!(coord[0] == startY && coord[1] == startX)) {
-                path.add(coord[1]);
-                path.add(coord[0]);
+            } else if (!(curNode.y == startY && curNode.x == startX)) {
+                path.add(curNode.x);
+                path.add(curNode.y);
             }
 
             // Refactor nr and nc to something else
-            for (int i = 0; i < directions.length; i++) {
-                int nr = coord[0] + directions[i][0], nc = coord[1] + directions[i][1];
-                if (nr < 0 || nr >= this.rows || nc < 0 || nc >= this.cols ||
-                        this.maze[nr][nc] == Square.WALL || visited[nr][nc]) {
+            for (int[] direction : directions) {
+                int nextY = curNode.y + direction[0], nextX = curNode.x + direction[1];
+                if (nextY < 0 || nextY >= this.rows || nextX < 0 || nextX >= this.cols ||
+                        this.maze[nextY][nextX] == Square.WALL || visited[nextY][nextX]) {
                     continue;
                 }
-                frontier.push(new int[]{nr, nc, coord[2]+1});
+                frontier.push(new Node(nextX, nextY));
             }
         }
         return false;
@@ -69,30 +69,30 @@ public class MazeSolver {
     boolean BFS(List<Integer> path) {
         boolean[][] visited = new boolean[this.maze.length][this.maze[0].length];
         int[][] directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
-        Queue<int[]> frontier = new LinkedList<>();
-        frontier.add(new int[]{startY, startX, 0});
+        Queue<Node> frontier = new LinkedList<>();
+        frontier.add(new Node(startX, startY));
 
         while (!frontier.isEmpty()) {
-            int[] coord = frontier.poll();
-            visited[coord[0]][coord[1]] = true;
+            Node curNode = frontier.poll();
+            visited[curNode.y][curNode.x] = true;
 
-            if (this.maze[coord[0]][coord[1]] == Square.EXIT) {
-                path.add(coord[1]);
-                path.add(coord[0]);
+            if (this.maze[curNode.y][curNode.x] == Square.EXIT) {
+                path.add(curNode.x);
+                path.add(curNode.y);
                 return true;
-            } else if (!(coord[0] == startY && coord[1] == startX)) {
-                path.add(coord[1]);
-                path.add(coord[0]);
+            } else if (!(curNode.y == startY && curNode.x == startX)) {
+                path.add(curNode.x);
+                path.add(curNode.x);
             }
 
             // Refactor nr and nc to something else
-            for (int i = 0; i < directions.length; i++) {
-                int nr = coord[0] + directions[i][0], nc = coord[1] + directions[i][1];
-                if (nr < 0 || nr >= this.rows || nc < 0 || nc >= this.cols ||
-                        this.maze[nr][nc] == Square.WALL || visited[nr][nc]) {
+            for (int[] direction : directions) {
+                int nextY = curNode.y + direction[0], nextX = curNode.x + direction[1];
+                if (nextY < 0 || nextY >= this.rows || nextX < 0 || nextX >= this.cols ||
+                        this.maze[nextY][nextX] == Square.WALL || visited[nextY][nextX]) {
                     continue;
                 }
-                frontier.add(new int[]{nr, nc, coord[2]+1});
+                frontier.add(new Node(nextX, nextY));
             }
         }
         return false;
@@ -119,14 +119,14 @@ public class MazeSolver {
 
             visited[curNode.y][curNode.x] = true;
 
-            for (int i = 0; i < directions.length; i++) {
-                int nextY = curNode.y + directions[i][0], nextX = curNode.x + directions[i][1];
+            for (int[] direction : directions) {
+                int nextY = curNode.y + direction[0], nextX = curNode.x + direction[1];
                 if (nextY < 0 || nextY >= this.rows || nextX < 0 || nextX >= this.cols ||
                         this.maze[nextY][nextX] == Square.WALL || visited[nextY][nextX]) {
                     continue;
                 }
 
-                GBFSNode nextNode = new GBFSNode(nextX, nextY, curNode.distanceFromStart+1, calcDistanceToClosestGoal(nextX, nextY));
+                GBFSNode nextNode = new GBFSNode(nextX, nextY, curNode.distanceFromStart + 1, calcDistanceToClosestGoal(nextX, nextY));
                 if (!frontier.contains(nextNode)) {
                     frontier.add(nextNode);
                 }
@@ -138,8 +138,8 @@ public class MazeSolver {
 
     private int calcDistanceToClosestGoal(int x, int y) {
         int smallest = 2147483647;
-        for (int i = 0; i < this.goals.length; i++) {
-            int currentDistance = calcManhattanDistance(x, y, this.goals[i].x, this.goals[i].y);
+        for (Node goal : this.goals) {
+            int currentDistance = calcManhattanDistance(x, y, goal.x, goal.y);
             if (currentDistance < smallest) {
                 smallest = currentDistance;
             }
@@ -151,7 +151,7 @@ public class MazeSolver {
         return Math.abs(curX - endX) + Math.abs(curY - endY);
     }
 
-    private class Node {
+    private static class Node {
         int x, y;
 
         public Node(int x, int y){
@@ -160,7 +160,7 @@ public class MazeSolver {
         }
     }
 
-    private class GBFSNode implements Comparable<GBFSNode> {
+    private static class GBFSNode implements Comparable<GBFSNode> {
         int x, y, distanceFromStart, estimatedDistanceFromGoal;
 
 
@@ -179,9 +179,7 @@ public class MazeSolver {
         @Override
         public boolean equals(Object otherNode) {
             if (otherNode instanceof GBFSNode) {
-                if (x == ((GBFSNode) otherNode).x && y == ((GBFSNode) otherNode).y) {
-                    return true;
-                }
+                return x == ((GBFSNode) otherNode).x && y == ((GBFSNode) otherNode).y;
             }
             return false;
         }

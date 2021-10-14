@@ -21,7 +21,7 @@ public class MazeApp extends JFrame {
 
     public MazeApp() {
         setTitle("Levi, Jakob, and Sandeep's Maze Solver");
-        setSize(640, 480);
+        setSize(850, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
