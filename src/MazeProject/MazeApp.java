@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class MazeApp extends JFrame {
+public class MazeApp extends JPanel {
 
     private Square[][] maze;
     private boolean loaded = false;
@@ -20,10 +20,10 @@ public class MazeApp extends JFrame {
     Timer timer;
 
     public MazeApp() {
-        setTitle("Levi, Jakob, and Sandeep's Maze Solver");
-        setSize(850, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setTitle("Levi, Jakob, and Sandeep's Maze Solver");
+//        setSize(850, 600);
+//        setLocationRelativeTo(null);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel topPanel = new JPanel();
         JLabel label = new JLabel("File Name: ");
@@ -127,8 +127,6 @@ public class MazeApp extends JFrame {
             }
         });
 
-
-
         topPanel.add(label);
         topPanel.add(textField);
         topPanel.add(load);
@@ -152,19 +150,12 @@ public class MazeApp extends JFrame {
         if (loaded) {
             g.translate(0, 70);
 
-            int frameHeight = getBounds().getSize().height-95;
+            int frameHeight = getBounds().getSize().height-70;
             int frameWidth = getBounds().getSize().width;
             int mazeRows = maze.length;
             int mazeCols = maze[0].length;
             int cellHeight = frameHeight / mazeRows;
             int cellWidth = frameWidth / mazeCols;
-
-            // Can be used to keep aspect ratio
-//            if (cellHeight < cellWidth) {
-//                cellWidth = cellHeight;
-//            } else {
-//                cellHeight = cellWidth;
-//            }
 
             for (int row = 0; row < maze.length; row++) {
                 for (int col = 0; col < maze[0].length; col++) {
@@ -195,13 +186,13 @@ public class MazeApp extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MazeApp mazeApp = new MazeApp();
-                mazeApp.setVisible(true);
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                MazeApp mazeApp = new MazeApp();
+//                mazeApp.setVisible(true);
+//            }
+//        });
+//    }
 }
